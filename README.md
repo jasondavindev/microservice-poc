@@ -1,11 +1,4 @@
-# RabbitMQ Proof of concept
-
-## References
-
-- https://www.rabbitmq.com/tutorials/amqp-concepts.html
-- http://www.squaremobius.net/amqp.node/channel_api.html
-- https://github.com/eduardo-matos/async-concurrent-talk
-- https://github.com/squaremo/amqp.node/tree/master/examples/tutorials
+# Microservices Proof of concept
 
 ## Running
 
@@ -15,7 +8,7 @@ Run:
 source dev.sh
 ```
 
-Up Rabbit container:
+Up Rabbit and Mysql containers:
 
 ```bash
 dkup
@@ -27,34 +20,33 @@ Install Node.js packages:
 install_packages
 ```
 
-Publish messages in direct queue:
+Start API and Worker:
 
 ```bash
-dk node queues/publisher.js --messages-count=1000
+start_services
 ```
 
-Access http://localhost:15672/ to view published messages.
-
-Consume messages:
+Create a new order:
 
 ```bash
-dk node queues/consumer.js
+curl -H 'Content-type: application/json' -X POST -d '{"user": "juca", "address": "Av Sao joao", "price": 1223.2}' localhost:3000/order
+
+Response:
+{"id":"e8af94e4-e739-436e-9f4f-38d2e2a15688"}
 ```
 
-Consume messages concurrently:
+Check order status:
 
 ```bash
-dk node queues/consumer.js --concurrency=20
-```
+curl localhost:3000/status/e8af94e4-e739-436e-9f4f-38d2e2a15688
 
-Publish messages by exchanges (read [Exchanges and Exchange Types](https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges) for more details):
-
-```bash
-dk node exchanges/publisher.js --messages-count=1000
-```
-
-Consume messages:
-
-```bash
-dk node exchanges/consumer.js --concurrency=20
+Response:
+{
+  "id": 1,
+  "user": "juca",
+  "address": "Av Sao joao",
+  "uuid": "e8af94e4-e739-436e-9f4f-38d2e2a15688",
+  "price": "1223.2",
+  "shipping_price": "608.00"
+}
 ```
