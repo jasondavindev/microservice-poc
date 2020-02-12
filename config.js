@@ -1,0 +1,4 @@
+module.exports = {
+  RABBITMQ_CONNECTION_URL: process.env.RABBITMQ_CONNECTION_URL,
+  MYSQL_CONNECTION_URL: process.env.MYSQL_CONNECTION_URL,
+};
