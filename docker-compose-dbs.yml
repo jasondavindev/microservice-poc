@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  rabbit:
+    container_name: rabbit-micro
+    image: rabbitmq:management-alpine
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - net
+
+  mysql:
+    container_name: mysql-micro
+    image: mysql:5.7.22
+    volumes:
+      - $PWD/volumes/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: micro_services
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge

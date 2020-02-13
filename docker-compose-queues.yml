@@ -1,15 +1,6 @@
 version: '3.7'
 
 services:
-  rabbit:
-    container_name: rabbit-micro
-    image: rabbitmq:management-alpine
-    ports:
-      - 15672:15672
-      - 5672:5672
-    networks:
-      - net
-
   api:
     container_name: api-messaging-micro
     image: node:10.16.0
@@ -22,9 +13,6 @@ services:
       RABBITMQ_CONNECTION_URL: amqp://rabbit:5672
       MYSQL_CONNECTION_URL: mysql://root:secret@mysql:3306/micro_services
     command: yarn nodemon messaging/api.js
-    depends_on:
-      - mysql
-      - rabbit
     networks:
       - net
 
@@ -38,21 +26,6 @@ services:
       RABBITMQ_CONNECTION_URL: amqp://rabbit:5672
       MYSQL_CONNECTION_URL: mysql://root:secret@mysql:3306/micro_services
     command: yarn nodemon messaging/worker.js
-    depends_on:
-      - mysql
-      - rabbit
-    networks:
-      - net
-
-  mysql:
-    container_name: mysql-micro
-    image: mysql:5.7.22
-    volumes:
-      - $PWD/volumes/mysql:/var/lib/mysql
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      MYSQL_DATABASE: micro_services
-      MYSQL_ROOT_PASSWORD: secret
     networks:
       - net
 

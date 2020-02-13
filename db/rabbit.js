@@ -35,6 +35,26 @@ const Rabbit = {
       options
     );
   },
+
+  publish: async (exchange, routingKey = '', message) => {
+    return this._channel.publish(
+      exchange,
+      routingKey,
+      Buffer.from(JSON.stringify(message))
+    );
+  },
+
+  bindQueue: async (queue, exchange, pattern) => {
+    return this._channel.bindQueue(queue, exchange, pattern);
+  },
+
+  assertExchange: async (name, type, options) => {
+    return this._channel.assertExchange(name, type, options);
+  },
+
+  assertQueue: async (name) => {
+    return this._channel.assertQueue(name);
+  },
 };
 
 module.exports = Rabbit;

@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  api:
+    container_name: api-messaging-micro
+    image: node:10.16.0
+    volumes:
+      - $PWD:/app
+    working_dir: /app
+    ports:
+      - 3000:3000
+    environment:
+      RABBITMQ_CONNECTION_URL: amqp://rabbit:5672
+    command: yarn nodemon exchanges/api.js
+    networks:
+      - net
+
+  worker1:
+    container_name: worker-1-catalog
+    image: node:10.16.0
+    volumes:
+      - $PWD:/app
+    working_dir: /app
+    environment:
+      RABBITMQ_CONNECTION_URL: amqp://rabbit:5672
+    command: yarn nodemon exchanges/catalog.js
+    networks:
+      - net
+
+  worker2:
+    container_name: worker-2-store
+    image: node:10.16.0
+    volumes:
+      - $PWD:/app
+    working_dir: /app
+    environment:
+      RABBITMQ_CONNECTION_URL: amqp://rabbit:5672
+    command: yarn nodemon exchanges/store.js
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
